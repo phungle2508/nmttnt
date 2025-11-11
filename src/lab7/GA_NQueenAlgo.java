@@ -20,16 +20,16 @@ public class GA_NQueenAlgo {
 
     public Node execute() {
         // Enter your code here
+        int popSize = POP_SIZE;
 
         for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
             // Create a new population
             List<Node> newPopulation = new ArrayList<Node>();
-
             // Fill the new population
-            while (newPopulation.size() < POP_SIZE) {
+            while (newPopulation.size() < popSize) {
                 // Select parents
-                Node parent1 = getParentByTournamentSelection();
-                Node parent2 = getParentByTournamentSelection();
+                Node parent1 = getParentByRandomSelection();
+                Node parent2 = getParentByRandomSelection();
 
                 // Reproduce
                 Node child = reproduce(parent1, parent2);
@@ -45,14 +45,17 @@ public class GA_NQueenAlgo {
 
             // Replace old population with new population
             population = newPopulation;
-
+            popSize+= MAX_ITERATIONS ;
             // Check for solution
             for (Node individual : population) {
                 if (individual.getH() == 0) {
+                    System.out.println(popSize);
                     return individual; // Solution found
                 }
             }
+
         }
+        System.out.println(popSize);
         return null;
     }
 
@@ -74,7 +77,7 @@ public class GA_NQueenAlgo {
             if (i < crossoverPoint) {
                 child.setRow(i, x.getRow(i));
             } else {
-                child.setRow(i, y.getRow(i));
+                child.setRow(i, y.generateBetterCandidates().get(0).getRow(i));
             }
         }
         return child;
