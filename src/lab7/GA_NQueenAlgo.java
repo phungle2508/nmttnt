@@ -20,6 +20,39 @@ public class GA_NQueenAlgo {
 
     public Node execute() {
         // Enter your code here
+
+        for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
+            // Create a new population
+            List<Node> newPopulation = new ArrayList<Node>();
+
+            // Fill the new population
+            while (newPopulation.size() < POP_SIZE) {
+                // Select parents
+                Node parent1 = getParentByTournamentSelection();
+                Node parent2 = getParentByTournamentSelection();
+
+                // Reproduce
+                Node child = reproduce(parent1, parent2);
+
+                // Mutate
+                if (rd.nextDouble() <= MUTATION_RATE) {
+                    mutate(child);
+                }
+
+                // Add child to new population
+                newPopulation.add(child);
+            }
+
+            // Replace old population with new population
+            population = newPopulation;
+
+            // Check for solution
+            for (Node individual : population) {
+                if (individual.getH() == 0) {
+                    return individual; // Solution found
+                }
+            }
+        }
         return null;
     }
 
@@ -27,25 +60,44 @@ public class GA_NQueenAlgo {
     // move it to a random row.
     public void mutate(Node node) {
         // Enter your code here
-        return null;
+        int index = rd.nextInt(Node.N);
+        int row = rd.nextInt(Node.N);
+        node.setRow(index, row);
     }
 
     // Crossover x and y to reproduce a child
     public Node reproduce(Node x, Node y) {
         // Enter your code here
-        return null;
+        Node child = new Node();
+        int crossoverPoint = rd.nextInt(Node.N);
+        for (int i = 0; i < Node.N; i++) {
+            if (i < crossoverPoint) {
+                child.setRow(i, x.getRow(i));
+            } else {
+                child.setRow(i, y.getRow(i));
+            }
+        }
+        return child;
     }
 
     // Select K individuals from the population at random and
     // select the best out of these to become a parent.
     public Node getParentByTournamentSelection() {
         // Enter your code here
-        return null;
+        int K = 10; // Tournament size
+        List<Node> tournament = new ArrayList<Node>();
+        for (int i = 0; i < K; i++) {
+            int index = rd.nextInt(POP_SIZE);
+            tournament.add(population.get(index));
+        }
+        tournament.sort(null);
+        return tournament.get(0);
     }
 
     // Select a random parent from the population
     public Node getParentByRandomSelection() {
         // Enter your code here
-        return null;
+        int index = rd.nextInt(POP_SIZE);
+        return population.get(index);
     }
 }
